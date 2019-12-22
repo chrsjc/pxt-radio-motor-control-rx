@@ -1,11 +1,39 @@
+class Motor {
+    private readonly motor: kitronik_motor_driver.Motors
+    private _speed: number = 0;
+    constructor(motor: kitronik_motor_driver.Motors) {
+        this.motor = motor;
+    }
+
+    get speed(): number
+    { return this._speed }
+
+    set speed(newSpeed: number) {
+
+        this._speed = newSpeed;
+
+        if (this._speed > 0) {
+            kitronik_motor_driver.motorOn(this.motor, kitronik_motor_driver.MotorDirection.Forward, this._speed)
+        } else if (this._speed < 0) {
+            kitronik_motor_driver.motorOn(this.motor, kitronik_motor_driver.MotorDirection.Reverse, Math.abs(this._speed))
+        } else {
+            kitronik_motor_driver.motorOff(this.motor)
+        }
+
+    }
+}
+
+enum Side {
+    Left = 0, Right = 1
+}
+const motor = [new Motor(kitronik_motor_driver.Motors.Motor2), new Motor(kitronik_motor_driver.Motors.Motor1)]
+
 radio.onReceivedValue(function (name, value) {
     packetReceived = true
     if (name == "speedL") {
-        speedL = value
-        updateMotor(kitronik_motor_driver.Motors.Motor2, speedL)
+        motor[Side.Left].speed = value
     } else if (name == "speedR") {
-        speedR = value
-        updateMotor(kitronik_motor_driver.Motors.Motor1, speedR)
+        motor[Side.Right].speed = value
     }
 })
 function plotMotor(x: number, y: number) {
@@ -34,8 +62,6 @@ function plotPacketReceived() {
     }
 }
 let packetReceived = false
-let speedR = 0
-let speedL = 0
 let name = ""
 let value = 0
 function speedToScreen(speed: number) {
@@ -50,21 +76,12 @@ function speedToScreen(speed: number) {
 
     return y
 }
-function updateMotor(motor: kitronik_motor_driver.Motors, speed: number) {
 
-    if (speed > 0) {
-        kitronik_motor_driver.motorOn(motor, kitronik_motor_driver.MotorDirection.Forward, speed)
-    } else if (speed < 0) {
-        kitronik_motor_driver.motorOn(motor, kitronik_motor_driver.MotorDirection.Reverse, Math.abs(speed))
-    } else {
-        kitronik_motor_driver.motorOff(motor)
-    }
-}
 radio.setGroup(1)
 control.inBackground(function () {
     while (true) {
-        plotMotorL(speedL)
-        plotMotorR(speedR)
+        plotMotorL(motor[Side.Left].speed)
+        plotMotorR(motor[Side.Right].speed)
         plotPacketReceived()
         basic.pause(100)
     }
