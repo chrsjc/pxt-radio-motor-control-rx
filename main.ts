@@ -2,10 +2,10 @@ radio.onReceivedValue(function (name, value) {
     packetReceived = true
     if (name == "speedL") {
         speedL = value
-        updateMotor(kitronik.Motors.Motor2, speedL)
+        updateMotor(kitronik_motor_driver.Motors.Motor2, speedL)
     } else if (name == "speedR") {
         speedR = value
-        updateMotor(kitronik.Motors.Motor1, speedR)
+        updateMotor(kitronik_motor_driver.Motors.Motor1, speedR)
     }
 })
 function plotMotor(x: number, y: number) {
@@ -50,14 +50,14 @@ function speedToScreen(speed: number) {
 
     return y
 }
-function updateMotor(motor: kitronik.Motors, speed: number) {
+function updateMotor(motor: kitronik_motor_driver.Motors, speed: number) {
 
     if (speed > 0) {
-        kitronik.motorOn(motor, kitronik.MotorDirection.Forward, speed)
+        kitronik_motor_driver.motorOn(motor, kitronik_motor_driver.MotorDirection.Forward, speed)
     } else if (speed < 0) {
-        kitronik.motorOn(motor, kitronik.MotorDirection.Reverse, Math.abs(speed))
+        kitronik_motor_driver.motorOn(motor, kitronik_motor_driver.MotorDirection.Reverse, Math.abs(speed))
     } else {
-        kitronik.motorOff(motor)
+        kitronik_motor_driver.motorOff(motor)
     }
 }
 radio.setGroup(1)
