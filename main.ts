@@ -1,3 +1,8 @@
+const motorMin = -100;
+const motorMax = 100;
+const screenMin = 0;
+const screenMax = 4;
+
 class Motor {
     private readonly motor: kitronik_motor_driver.Motors
     private _speed: number = 0;
@@ -23,10 +28,48 @@ class Motor {
     }
 }
 
+class VerticalBar {
+    private readonly x: number;
+    private readonly min: number;
+    private readonly max: number;
+
+    constructor(x: number, min: number, max: number) {
+        this.x = x;
+        this.min = min;
+        this.max = max;
+    }
+
+    plot(value: number) {
+
+        const y = this.scale(value);
+
+        for (let i = screenMin; i <= screenMax; i++) {
+            if (i == y) {
+                led.plot(this.x, i)
+            } else {
+                led.unplot(this.x, i)
+            }
+        }
+    }
+
+    private scale(value: number) {
+
+        return pins.map(
+            value,
+            this.min,
+            this.max,
+            screenMax, // screen origin is top left
+            screenMin
+        )
+    }
+}
+
 enum Side {
     Left = 0, Right = 1
 }
+
 const motor = [new Motor(kitronik_motor_driver.Motors.Motor2), new Motor(kitronik_motor_driver.Motors.Motor1)]
+const verticalBar = [new VerticalBar(0, motorMin, motorMax), new VerticalBar(4, motorMin, motorMax)];
 
 radio.onReceivedValue(function (name, value) {
     packetReceived = true
@@ -36,23 +79,7 @@ radio.onReceivedValue(function (name, value) {
         motor[Side.Right].speed = value
     }
 })
-function plotMotor(x: number, y: number) {
-    for (let i = 0; i <= 5 - 1; i++) {
-        if (i == y) {
-            led.plot(x, i)
-        } else {
-            led.unplot(x, i)
-        }
-    }
-}
-function plotMotorL(speedL: number) {
-    let yL = speedToScreen(speedL)
-    plotMotor(0, yL)
-}
-function plotMotorR(speedR: number) {
-    let yR = speedToScreen(speedR)
-    plotMotor(4, yR)
-}
+
 function plotPacketReceived() {
     if (packetReceived) {
         led.toggle(2, 2)
@@ -61,27 +88,17 @@ function plotPacketReceived() {
         led.plot(2, 2)
     }
 }
+
 let packetReceived = false
 let name = ""
 let value = 0
-function speedToScreen(speed: number) {
-
-    let y = pins.map(
-        speed,
-        -100,
-        100,
-        4,
-        0
-    )
-
-    return y
-}
 
 radio.setGroup(1)
+
 control.inBackground(function () {
     while (true) {
-        plotMotorL(motor[Side.Left].speed)
-        plotMotorR(motor[Side.Right].speed)
+        verticalBar[Side.Left].plot(motor[Side.Left].speed)
+        verticalBar[Side.Right].plot(motor[Side.Right].speed)
         plotPacketReceived()
         basic.pause(100)
     }
