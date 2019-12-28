@@ -1,5 +1,3 @@
-const motorMin = -100;
-const motorMax = 100;
 const screenMin = 0;
 const screenMax = 4;
 const sensorStop = 1000;
@@ -20,12 +18,12 @@ class MotorControl {
         this.duration = -1;
     }
 
-    setSpeed(value: number) {
-        if (value <= 0) {
-            this.motor.speed = value;
+    setSpeed(speed: number) {
+        if (speed <= 0) {
+            this.motor.setSpeed(speed);
         }
         else if (this.duration > sensorStop) {
-            this.motor.speed = value
+            this.motor.setSpeed(speed);
         }
         else {
             this.motor.stop()
@@ -44,7 +42,7 @@ class MotorControl {
 }
 
 const motor = [new Motor(kitronik_motor_driver.Motors.Motor2), new Motor(kitronik_motor_driver.Motors.Motor1)]
-const verticalBar = [new VerticalBar(0, motorMin, motorMax), new VerticalBar(4, motorMin, motorMax)];
+const verticalBar = [new VerticalBar(0, Motor.min, Motor.max), new VerticalBar(4, Motor.min, Motor.max)];
 const heartBeatLed = new HeartBeatLed(2, 2);
 const rangeBar = new VerticalBar(1, sensorStop, 5000);
 const sensor = new DistanceSensor(DigitalPin.P1, DigitalPin.P2);
@@ -57,8 +55,8 @@ remote.onReceivedSpeedR(function (speed: number) { motorControl[Side.Right].setS
 
 control.inBackground(function () {
     while (true) {
-        verticalBar[Side.Left].plot(motor[Side.Left].speed)
-        verticalBar[Side.Right].plot(motor[Side.Right].speed)
+        verticalBar[Side.Left].plot(motor[Side.Left].getSpeed())
+        verticalBar[Side.Right].plot(motor[Side.Right].getSpeed())
         heartBeatLed.plot()
         rangeBar.plot(sensor.getDuration())
         basic.pause(100)

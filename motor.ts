@@ -1,23 +1,27 @@
 class Motor {
-    private readonly motor: kitronik_motor_driver.Motors
-    private _speed: number = 0;
+    private readonly motor: kitronik_motor_driver.Motors;
+    private speed: number = 0;
+    static readonly min: number = -100;
+    static readonly max: number = 100;
+
     constructor(motor: kitronik_motor_driver.Motors) {
         this.motor = motor;
     }
 
-    get speed(): number
-    { return this._speed }
+    getSpeed(): number {
+        return this.speed;
+    }
 
-    set speed(newSpeed: number) {
+    setSpeed(speed: number) {
 
-        this._speed = newSpeed;
+        this.speed = speed;
 
-        if (this._speed > 0) {
-            kitronik_motor_driver.motorOn(this.motor, kitronik_motor_driver.MotorDirection.Forward, this._speed)
-        } else if (this._speed < 0) {
-            kitronik_motor_driver.motorOn(this.motor, kitronik_motor_driver.MotorDirection.Reverse, Math.abs(this._speed))
+        if (this.speed > 0) {
+            kitronik_motor_driver.motorOn(this.motor, kitronik_motor_driver.MotorDirection.Forward, this.speed);
+        } else if (this.speed < 0) {
+            kitronik_motor_driver.motorOn(this.motor, kitronik_motor_driver.MotorDirection.Reverse, Math.abs(this.speed));
         } else {
-            kitronik_motor_driver.motorOff(this.motor)
+            kitronik_motor_driver.motorOff(this.motor);
         }
 
     }
