@@ -6,7 +6,7 @@ class DistanceSensor {
         this.triggerPin = triggerPin;
 
         pins.onPulsed(echoPin, PulseValue.High, function () {
-            this.duration = pins.pulseDuration()
+            this.duration = pins.pulseDuration();
 
             if (this.onEchoHandler) {
                 this.onEchoHandler();
@@ -15,9 +15,9 @@ class DistanceSensor {
     }
 
     trigger() {
-        pins.digitalWritePin(this.triggerPin, 1)
-        control.waitMicros(10)
-        pins.digitalWritePin(this.triggerPin, 0)
+        pins.digitalWritePin(this.triggerPin, 1);
+        control.waitMicros(10);
+        pins.digitalWritePin(this.triggerPin, 0);
     }
 
     getDuration() {
