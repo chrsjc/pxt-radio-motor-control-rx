@@ -1,4 +1,7 @@
 class Remote {
+    private onReceivedValueHandler: () => void;
+    private onReceivedSpeedLHandler: (speed: number) => void;
+    private onReceivedSpeedRHandler: (speed: number) => void;
 
     constructor(group: number) {
         radio.setGroup(group);
@@ -31,8 +34,4 @@ class Remote {
     onReceivedSpeedR(cb: (speed: number) => void) {
         this.onReceivedSpeedRHandler = cb;
     }
-
-    private onReceivedValueHandler: () => void;
-    private onReceivedSpeedLHandler: (speed: number) => void;
-    private onReceivedSpeedRHandler: (speed: number) => void;
 }
