@@ -9,7 +9,12 @@
     },
     "files": [
         "README.md",
-        "main.ts"
+        "main.ts",
+        "remote.ts",
+        "motor.ts",
+        "distancesensor.ts",
+        "verticalbar.ts",
+        "heartbeatled.ts"
     ],
     "testFiles": [
         "test.ts"
