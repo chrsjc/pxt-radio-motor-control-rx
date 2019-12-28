@@ -1,5 +1,3 @@
-const screenMin = 0;
-const screenMax = 4;
 const sensorStop = 1000;
 const RadioGroup = 1;
 
@@ -44,7 +42,7 @@ class MotorControl {
 const motor = [new Motor(kitronik_motor_driver.Motors.Motor2), new Motor(kitronik_motor_driver.Motors.Motor1)]
 const verticalBar = [new VerticalBar(0, Motor.min, Motor.max), new VerticalBar(4, Motor.min, Motor.max)];
 const heartBeatLed = new HeartBeatLed(2, 2);
-const rangeBar = new VerticalBar(1, sensorStop, 5000);
+const rangeBar = new VerticalBar(1, 5000, sensorStop);
 const sensor = new DistanceSensor(DigitalPin.P1, DigitalPin.P2);
 const motorControl = [new MotorControl(motor[Side.Left], sensor), new MotorControl(motor[Side.Right], sensor)];
 
