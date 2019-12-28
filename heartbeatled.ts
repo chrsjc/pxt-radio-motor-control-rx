@@ -1,7 +1,7 @@
 class HeartBeatLed {
     private readonly x: number;
     private readonly y: number;
-    private _toggle: boolean = false;
+    private shouldToggle: boolean = false;
 
     constructor(x: number, y: number) {
         this.x = x;
@@ -9,15 +9,15 @@ class HeartBeatLed {
     }
 
     plot() {
-        if (this._toggle) {
-            led.toggle(this.x, this.y)
-            this._toggle = false
+        if (this.shouldToggle) {
+            led.toggle(this.x, this.y);
+            this.shouldToggle = false;
         } else {
-            led.plot(this.x, this.y)
+            led.plot(this.x, this.y);
         }
     }
 
     toggle() {
-        this._toggle = true;
+        this.shouldToggle = true;
     }
 }
